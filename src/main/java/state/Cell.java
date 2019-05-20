@@ -8,14 +8,11 @@ public class Cell {
         this.status = -1;
     }
 
-    public Cell(int chanceToLife, boolean isCell) {
-        if(isCell){
+    public Cell(int chanceToLife) {
             if (randomNumber() < chanceToLife)
                 this.status = 1;
             else
                 this.status = 0;
-        } else
-            this.status =1;
     }
 
     private int randomNumber() {

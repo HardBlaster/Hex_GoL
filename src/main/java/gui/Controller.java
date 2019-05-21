@@ -29,6 +29,12 @@ public class Controller implements Initializable {
     private TextField inputDeadIf;
     @FXML
     private Label errorMessage;
+    @FXML
+    private Label outGeneration;
+    @FXML
+    private Label outLivingCells;
+    @FXML
+    private Label outDeadCells;
 
     private State simulation;
 
@@ -166,6 +172,16 @@ public class Controller implements Initializable {
     }
 
     @FXML
+    private void refreshLabels() {
+        int livingCells = simulation.getLivingCells();
+        int deadCells = simulation.getDeadCells();
+
+        outGeneration.setText("" + simulation.getGeneration());
+        outLivingCells.setText(livingCells + " (" + 100*livingCells/simulation.getTOTAL() + "%)");
+        outDeadCells.setText("" + deadCells + " (" + 100*deadCells/simulation.getTOTAL() + "%)");
+    }
+
+    @FXML
     private void saveInput() {
         errorMessage.setVisible(false);
 
@@ -181,6 +197,7 @@ public class Controller implements Initializable {
             simulation.setDeadIf(saveDeadIf());
 
             refreshCanvas();
+            refreshLabels();
         }
     }
 
@@ -193,6 +210,7 @@ public class Controller implements Initializable {
         else {
             simulation.refresh();
             refreshCanvas();
+            refreshLabels();
         }
     }
 

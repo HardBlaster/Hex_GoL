@@ -6,11 +6,15 @@ public class State {
     private int[] stableIf;
     private int[] bornIf;
     private int[] deadIf;
+    private int generation;
+    private int TOTAL;
 
 
     public State(int chanceToLife, int rows, int columns) {
+        TOTAL = columns*rows;
         columns *= 2;
         map = new Cell[rows][columns];
+        generation = 0;
 
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
@@ -18,6 +22,28 @@ public class State {
                     map[i][j] = new Cell(chanceToLife);
                 else
                     map[i][j] = new Cell();
+    }
+
+    public int getLivingCells() {
+        int amount = 0;
+
+        for(Cell[] row : map)
+            for(Cell cell : row)
+                if(cell.isAlive())
+                    amount++;
+
+        return amount;
+    }
+
+    public int getDeadCells() {
+        int amount = 0;
+
+        for(Cell[] row : map)
+            for(Cell cell : row)
+                if(cell.isCell() && !cell.isAlive())
+                    amount++;
+
+        return amount;
     }
 
     private int countNeighbours(Cell[][] current, int row, int column) {
@@ -92,6 +118,8 @@ public class State {
                 if (isCell(i, j))
                     if (!isInArray(stableIf, neighboursMatrix[i][j]))
                         map[i][j].setStatus(getNextStatus(neighboursMatrix[i][j], map[i][j].isAlive()));
+
+        generation++;
     }
 
     public void refresh() {
@@ -125,5 +153,13 @@ public class State {
 
     public Cell[][] getMap() {
         return map;
+    }
+
+    public int getGeneration() {
+        return generation;
+    }
+
+    public int getTOTAL() {
+        return TOTAL;
     }
 }

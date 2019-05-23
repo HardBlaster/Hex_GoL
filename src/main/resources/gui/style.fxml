@@ -10,7 +10,7 @@
     <children>
         <AnchorPane layoutX="15.0" layoutY="10.0" prefHeight="1050.0" prefWidth="1461.0" style="-fx-background-color: BLACK;">
             <children>
-                <Canvas id="simulationCanvas" fx:id="simulationCanvas" height="1050.0" layoutX="15.0" layoutY="10.0" width="1461.0" />
+                <Canvas id="simulationCanvas" fx:id="simulationCanvas" height="1050.0" layoutX="15.0" layoutY="10.0" onMouseClicked="#testelek" width="1461.0" />
             </children>
         </AnchorPane>
       <Label layoutX="1520.0" layoutY="50.0" text="Initial alive ratio:" />

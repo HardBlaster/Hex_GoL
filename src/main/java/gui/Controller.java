@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import state.State;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -46,7 +47,7 @@ public class Controller implements Initializable {
     private boolean isCorrectAR() {
         String tmp = inputAliveRatio.getText();
 
-        if(tmp.isEmpty() || tmp.isBlank())
+        if (tmp.isEmpty() || tmp.isBlank())
             return false;
 
         int ar;
@@ -57,7 +58,7 @@ public class Controller implements Initializable {
             return false;
         }
 
-        if(ar > 0 && ar < 102)
+        if (ar > 0 && ar < 102)
             return true;
         else {
             showInputErrorMessage("The ratio should be between 1 and 100");
@@ -66,14 +67,14 @@ public class Controller implements Initializable {
     }
 
     private boolean isCorrectRule(String rule) {
-        if(rule.isEmpty() || rule.isBlank())
+        if (rule.isEmpty() || rule.isBlank())
             return false;
 
         String[] ruleArray = rule.split("[\\s\\p{Punct}]+");
-        for(String s : ruleArray) {
-            if(s.length() != 1)
+        for (String s : ruleArray) {
+            if (s.length() != 1)
                 return false;
-            if(Integer.valueOf(s) > 8 || Integer.valueOf(s) < 0)
+            if (Integer.valueOf(s) > 8 || Integer.valueOf(s) < 0)
                 return false;
         }
 
@@ -88,7 +89,7 @@ public class Controller implements Initializable {
         String[] splited = rule.split("[\\s\\p{Punct}]+");
 
         int[] ruleArray = new int[splited.length];
-        for(int i = 0; i < splited.length; i++)
+        for (int i = 0; i < splited.length; i++)
             ruleArray[i] = Integer.parseInt(splited[i]);
 
         return ruleArray;
@@ -109,13 +110,12 @@ public class Controller implements Initializable {
     private double[] getCenterCoordinates(int positionX, int positionY) {
         double[] coordinates = new double[2];
 
-        if(positionX%2 == 0) {
-            coordinates[0] = 11 + (positionY+1)*5 - 10 + 5;
-            coordinates[1] = 6 + positionX*5 + 5;
-        }
-        else {
-            coordinates[0] = 6 + positionY*5 + 5;
-            coordinates[1] = 11 + (positionX-1)*5 + 5;
+        if (positionX % 2 == 0) {
+            coordinates[0] = 16 + (positionY-1)*9 + 10;
+            coordinates[1] = 6 + positionX*15 + 10;
+        } else {
+            coordinates[0] = 6 + positionY*9 + 10;
+            coordinates[1] = 16 + (positionX-1)*15 + 15;
         }
 
         return coordinates;
@@ -125,7 +125,7 @@ public class Controller implements Initializable {
         double[] Xs = new double[6];
 
         for (int i = 0; i < 6; i++)
-            Xs[i] = centerCoordinateX + (5 - 0.3 / 2) * sin(i * Math.PI / 3);
+            Xs[i] = centerCoordinateX + (10 - 0.3 / 2) * sin(i * Math.PI / 3);
 
         return Xs;
     }
@@ -134,7 +134,7 @@ public class Controller implements Initializable {
         double[] Ys = new double[6];
 
         for (int i = 0; i < 6; i++)
-            Ys[i] = centerCoordinateY + (4 - 0.3 / 2) * cos(i * Math.PI / 3);
+            Ys[i] = centerCoordinateY + (10 - 0.3 / 2) * cos(i * Math.PI / 3);
 
         return Ys;
     }
@@ -150,7 +150,7 @@ public class Controller implements Initializable {
         double[] Xs = getCoordinatesX(centerCoordinates[0]);
         double[] Ys = getCoordinatesY(centerCoordinates[1]);
 
-        if(simulation.getMap()[positionX][positionY].isAlive())
+        if (simulation.getMap()[positionX][positionY].isAlive())
             canvasGC.setFill(Color.CHOCOLATE);
         else
             canvasGC.setFill(Color.DARKBLUE);
@@ -160,10 +160,62 @@ public class Controller implements Initializable {
     }
 
     private void drawGrid(int rows, int hexagons) {
-        for(int i = 0; i < rows; i++)
-            for(int j = 0; j < hexagons; j++)
-                if(simulation.getMap()[i][j].isCell())
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < hexagons; j++)
+                if (simulation.getMap()[i][j].isCell())
                     drawHexagon(i, j);
+    }
+
+    private boolean isCorrectInput() {
+        return isCorrectAR() && isCorrectRule(inputBornIf.getText()) && isCorrectRule(inputStableIf.getText()) && isCorrectRule(inputDeadIf.getText());
+    }
+
+    private void initializeSimulation(int aliveRatio, int rows, int columns, int[] bornIf, int[] stableIf, int[] deadIf) {
+        simulation = new State(aliveRatio, rows, columns);
+        simulation.setBornIf(bornIf);
+        simulation.setStableIf(stableIf);
+        simulation.setDeadIf(deadIf);
+    }
+
+    private Point getMouseLocation() {
+        return MouseInfo.getPointerInfo().getLocation();
+    }
+
+    private double[] getMouseCoordinates(Point mouseLocation) {
+        double[] mouseCoordinates = new double[2];
+
+        mouseCoordinates[0] = mouseLocation.getX()-21;
+        mouseCoordinates[1] = mouseLocation.getY()-16;
+
+        return mouseCoordinates;
+    }
+
+    private int[] getCellCoordinates(double[] mouseCoordinates) {
+        int[] cellCoordinates = new int[2];
+
+        for (int i = 0; i < simulation.getMap().length; i++)
+            for (int j = 0; j < simulation.getMap()[0].length; j++) {
+                double[] center = getCenterCoordinates(i, j);
+                if ((center[0] - 10 < mouseCoordinates[0] && center[0] + 10 > mouseCoordinates[0]) &&
+                        (center[1] - 10 < mouseCoordinates[1] && center[1] + 10 > mouseCoordinates[1])) {
+                    cellCoordinates[0] = i;
+                    cellCoordinates[1] = j;
+                    return cellCoordinates;
+                }
+            }
+
+        return cellCoordinates;
+    }
+
+    @FXML
+    private void testelek() {
+        Point mouseLocation = getMouseLocation();
+
+        double[] mouseCoordinates = getMouseCoordinates(mouseLocation);
+        int[] cellCoordinates = getCellCoordinates(mouseCoordinates);
+
+        simulation.reverseCellStatus(cellCoordinates[0], cellCoordinates[1]);
+        refreshCanvas();
     }
 
     @FXML
@@ -177,24 +229,16 @@ public class Controller implements Initializable {
         int deadCells = simulation.getDeadCells();
 
         outGeneration.setText("" + simulation.getGeneration());
-        outLivingCells.setText(livingCells + " (" + 100*livingCells/simulation.getTOTAL() + "%)");
-        outDeadCells.setText("" + deadCells + " (" + 100*deadCells/simulation.getTOTAL() + "%)");
+        outLivingCells.setText(livingCells + " (" + 100 * livingCells / simulation.getTOTAL() + "%)");
+        outDeadCells.setText("" + deadCells + " (" + 100 * deadCells / simulation.getTOTAL() + "%)");
     }
 
     @FXML
     private void saveInput() {
         errorMessage.setVisible(false);
 
-        boolean correctAR = isCorrectAR();
-        boolean correctBI = isCorrectRule(inputBornIf.getText());
-        boolean correctSI = isCorrectRule(inputStableIf.getText());
-        boolean correctDI = isCorrectRule(inputDeadIf.getText());
-
-        if(correctAR && correctBI && correctDI && correctSI) {
-            simulation = new State(saveAliveRatio(), 202, 142);
-            simulation.setBornIf(saveBornIf());
-            simulation.setStableIf(saveStableIf());
-            simulation.setDeadIf(saveDeadIf());
+        if (isCorrectInput()) {
+            initializeSimulation(saveAliveRatio(), 68, 78, saveBornIf(), saveStableIf(), saveDeadIf());
 
             refreshCanvas();
             refreshLabels();
@@ -205,7 +249,7 @@ public class Controller implements Initializable {
     private void nextStep() {
         errorMessage.setVisible(false);
 
-        if(simulation == null)
+        if (simulation == null)
             showInputErrorMessage("Missing parameters");
         else {
             simulation.refresh();

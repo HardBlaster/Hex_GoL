@@ -25,10 +25,14 @@
       <Label layoutX="1520.0" layoutY="650.0" text="Generation:" />
       <Label layoutX="1520.0" layoutY="680.0" text="Living cells: " />
       <Label layoutX="1520.0" layoutY="710.0" text="Dead cells:" />
-      <Label id="outGeneration" fx:id="outGeneration" layoutX="1715.0" layoutY="650.0" text="0" />
-      <Label id="outLivingCells" fx:id="outLivingCells" layoutX="1715.0" layoutY="680.0" text="0" />
-      <Label id="outDeadCells" fx:id="outDeadCells" layoutX="1715.0" layoutY="710.0" text="0" />
+      <Label id="outGeneration" fx:id="outGeneration" layoutX="1650.0" layoutY="650.0" text="0" />
+      <Label id="outLivingCells" fx:id="outLivingCells" layoutX="1650.0" layoutY="680.0" text="0" />
+      <Label id="outDeadCells" fx:id="outDeadCells" layoutX="1650.0" layoutY="710.0" text="0" />
       <Button layoutX="1805.0" layoutY="780.0" mnemonicParsing="false" onAction="#nextStep" text="Next step" />
       <Label id="errorMessage" fx:id="errorMessage" layoutX="1520.0" layoutY="182.0" textFill="RED" visible="false" />
+      <Button layoutX="1701.0" layoutY="645.0" mnemonicParsing="false" onAction="#plus50Steps" text="+50" />
+      <Button layoutX="1747.0" layoutY="645.0" mnemonicParsing="false" onAction="#plus100Steps" text="+100" />
+      <Button layoutX="1801.0" layoutY="645.0" mnemonicParsing="false" onAction="#plus500Steps" text="+500" />
+      <Button layoutX="1855.0" layoutY="645.0" mnemonicParsing="false" onAction="#plus1000Steps" text="+1000" />
     </children>
 </AnchorPane>

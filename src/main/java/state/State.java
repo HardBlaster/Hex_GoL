@@ -128,6 +128,13 @@ public class State {
         nextGen(neighboursMatrix);
     }
 
+    public void refresh(int steps) {
+        for(int i = 0; i < steps; i++) {
+            int[][] neighboursMatrix = getNeighboursMatrix();
+            nextGen(neighboursMatrix);
+        }
+    }
+
     public void reverseCellStatus(int row, int column) {
         if(map[row][column].isCell())
             if(map[row][column].isAlive())

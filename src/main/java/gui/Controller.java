@@ -207,6 +207,18 @@ public class Controller implements Initializable {
         return cellCoordinates;
     }
 
+    private void plusGeneration(int steps) {
+        errorMessage.setVisible(false);
+
+        if (simulation == null)
+            showInputErrorMessage("Missing parameters");
+        else {
+            simulation.refresh(steps);
+            refreshCanvas();
+            refreshLabels();
+        }
+    }
+
     @FXML
     private void testelek() {
         Point mouseLocation = getMouseLocation();
@@ -247,15 +259,27 @@ public class Controller implements Initializable {
 
     @FXML
     private void nextStep() {
-        errorMessage.setVisible(false);
+       plusGeneration(1);
+    }
 
-        if (simulation == null)
-            showInputErrorMessage("Missing parameters");
-        else {
-            simulation.refresh();
-            refreshCanvas();
-            refreshLabels();
-        }
+    @FXML
+    public void plus50Steps() {
+        plusGeneration(50);
+    }
+
+    @FXML
+    public void plus100Steps() {
+        plusGeneration(100);
+    }
+
+    @FXML
+    public void plus500Steps() {
+        plusGeneration(500);
+    }
+
+    @FXML
+    public void plus1000Steps() {
+        plusGeneration(1000);
     }
 
     @FXML

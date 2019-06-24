@@ -2,6 +2,7 @@
 
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -10,7 +11,7 @@
     <children>
         <AnchorPane layoutX="15.0" layoutY="10.0" prefHeight="1050.0" prefWidth="1461.0" style="-fx-background-color: BLACK;">
             <children>
-                <Canvas id="simulationCanvas" fx:id="simulationCanvas" height="1050.0" layoutX="15.0" layoutY="10.0" onMouseClicked="#testelek" width="1461.0" />
+                <Canvas id="simulationCanvas" fx:id="simulationCanvas" height="1050.0" layoutX="15.0" layoutY="10.0" onMouseClicked="#changeCellStatus" width="1461.0" />
             </children>
         </AnchorPane>
       <Label layoutX="1520.0" layoutY="50.0" text="Initial alive ratio:" />
@@ -34,5 +35,9 @@
       <Button layoutX="1747.0" layoutY="645.0" mnemonicParsing="false" onAction="#plus100Steps" text="+100" />
       <Button layoutX="1801.0" layoutY="645.0" mnemonicParsing="false" onAction="#plus500Steps" text="+500" />
       <Button layoutX="1855.0" layoutY="645.0" mnemonicParsing="false" onAction="#plus1000Steps" text="+1000" />
+      <Label layoutX="1520.0" layoutY="170.0" text="Save canvas: " />
+      <CheckBox layoutX="1715.0" layoutY="169.0" mnemonicParsing="false" onMouseClicked="#changeCanvasSave" />
+      <Label layoutX="1520.0" layoutY="200.0" text="Path" />
+      <TextField id="snapshotPath" fx:id="snapshotPath" layoutX="1715.0" layoutY="195.0" />
     </children>
 </AnchorPane>

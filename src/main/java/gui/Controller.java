@@ -1,15 +1,21 @@
 package gui;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import state.State;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -27,6 +33,8 @@ public class Controller implements Initializable {
     @FXML
     private TextField inputStableIf;
     @FXML
+    private TextField snapshotPath;
+    @FXML
     private TextField inputDeadIf;
     @FXML
     private Label errorMessage;
@@ -38,6 +46,8 @@ public class Controller implements Initializable {
     private Label outDeadCells;
 
     private State simulation;
+    private boolean canvasSave = false;
+    private String path = "";
 
     private void showInputErrorMessage(String message) {
         errorMessage.setText(message);
@@ -79,6 +89,11 @@ public class Controller implements Initializable {
         }
 
         return true;
+    }
+
+    private boolean isDirectoryExists(String directory) {
+        File f = new File(directory);
+        return f.exists() && f.isDirectory();
     }
 
     private int saveAliveRatio() {
@@ -207,6 +222,21 @@ public class Controller implements Initializable {
         return cellCoordinates;
     }
 
+    private void saveCanvas() {
+        if(canvasSave) {
+            SnapshotParameters params = new SnapshotParameters();
+            WritableImage tmp = new WritableImage(1430, 1035);
+            WritableImage snapshot = simulationCanvas.snapshot(params, tmp);
+
+            File out = new File(path + "/generation" + simulation.getGeneration() + ".png");
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", out);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void plusGeneration(int steps) {
         errorMessage.setVisible(false);
 
@@ -215,12 +245,18 @@ public class Controller implements Initializable {
         else {
             simulation.refresh(steps);
             refreshCanvas();
+            saveCanvas();
             refreshLabels();
         }
     }
 
     @FXML
-    private void testelek() {
+    private void changeCanvasSave() {
+        canvasSave = !canvasSave;
+    }
+
+    @FXML
+    private void changeCellStatus() {
         Point mouseLocation = getMouseLocation();
 
         double[] mouseCoordinates = getMouseCoordinates(mouseLocation);
@@ -249,10 +285,14 @@ public class Controller implements Initializable {
     private void saveInput() {
         errorMessage.setVisible(false);
 
+        if(isDirectoryExists(snapshotPath.getText()))
+            path = snapshotPath.getText();
+
         if (isCorrectInput()) {
             initializeSimulation(saveAliveRatio(), 68, 78, saveBornIf(), saveStableIf(), saveDeadIf());
 
             refreshCanvas();
+            saveCanvas();
             refreshLabels();
         }
     }

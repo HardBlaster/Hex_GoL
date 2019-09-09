@@ -7,9 +7,12 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import oscillatorFinder.Permutator;
 import state.State;
 
 import javax.imageio.ImageIO;
@@ -21,6 +24,7 @@ import java.util.ResourceBundle;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+
 
 public class Controller implements Initializable {
 
@@ -44,6 +48,33 @@ public class Controller implements Initializable {
     private Label outLivingCells;
     @FXML
     private Label outDeadCells;
+    @FXML
+    private Pane oscillatorFinderPane;
+    @FXML
+    private TextField oscMaxWidth;
+    @FXML
+    private TextField oscMaxHeight;
+    @FXML
+    private TextField pathToPermut;
+    @FXML
+    private Label oscErrorMessage;
+    @FXML
+    private ProgressBar oscProgressBar;
+    @FXML
+    private Label oscProgressLab;
+    @FXML
+    private TextField oscPatternsPath;
+    @FXML
+    private TextField oscMaxGeneration;
+    @FXML
+    private TextField oscSave;
+    @FXML
+    private TextField oscBornIf;
+    @FXML
+    private TextField oscStableIf;
+    @FXML
+    private TextField oscDeadIf;
+
 
     private State simulation;
     private boolean canvasSave = false;
@@ -84,7 +115,7 @@ public class Controller implements Initializable {
         for (String s : ruleArray) {
             if (s.length() != 1)
                 return false;
-            if (Integer.valueOf(s) > 8 || Integer.valueOf(s) < 0)
+            if (Integer.parseInt(s) > 8 || Integer.parseInt(s) < 0)
                 return false;
         }
 
@@ -126,11 +157,11 @@ public class Controller implements Initializable {
         double[] coordinates = new double[2];
 
         if (positionX % 2 == 0) {
-            coordinates[0] = 16 + (positionY-1)*9 + 10;
-            coordinates[1] = 6 + positionX*15 + 10;
+            coordinates[0] = 16 + (positionY - 1) * 9 + 10;
+            coordinates[1] = 6 + positionX * 15 + 10;
         } else {
-            coordinates[0] = 6 + positionY*9 + 10;
-            coordinates[1] = 16 + (positionX-1)*15 + 15;
+            coordinates[0] = 6 + positionY * 9 + 10;
+            coordinates[1] = 16 + (positionX - 1) * 15 + 15;
         }
 
         return coordinates;
@@ -199,8 +230,8 @@ public class Controller implements Initializable {
     private double[] getMouseCoordinates(Point mouseLocation) {
         double[] mouseCoordinates = new double[2];
 
-        mouseCoordinates[0] = mouseLocation.getX()-21;
-        mouseCoordinates[1] = mouseLocation.getY()-16;
+        mouseCoordinates[0] = mouseLocation.getX() - 21;
+        mouseCoordinates[1] = mouseLocation.getY() - 16;
 
         return mouseCoordinates;
     }
@@ -223,7 +254,7 @@ public class Controller implements Initializable {
     }
 
     private void saveCanvas() {
-        if(canvasSave) {
+        if (canvasSave) {
             SnapshotParameters params = new SnapshotParameters();
             WritableImage tmp = new WritableImage(1430, 1035);
             WritableImage snapshot = simulationCanvas.snapshot(params, tmp);
@@ -285,7 +316,7 @@ public class Controller implements Initializable {
     private void saveInput() {
         errorMessage.setVisible(false);
 
-        if(isDirectoryExists(snapshotPath.getText()))
+        if (isDirectoryExists(snapshotPath.getText()))
             path = snapshotPath.getText();
 
         if (isCorrectInput()) {
@@ -299,7 +330,7 @@ public class Controller implements Initializable {
 
     @FXML
     private void nextStep() {
-       plusGeneration(1);
+        plusGeneration(1);
     }
 
     @FXML
@@ -323,6 +354,44 @@ public class Controller implements Initializable {
     }
 
     @FXML
+    public void permutate() {
+        showOscErrorMessage(false);
+
+        if (isPermutInputCorrect()) {
+            Permutator permutator = new Permutator(Integer.parseInt(oscMaxWidth.getText()), Integer.parseInt(oscMaxHeight.getText()), pathToPermut.getText());
+            permutator.permutate();
+        } else
+            showOscErrorMessage(true);
+    }
+
+    @FXML
+    private void showOscErrorMessage(boolean visible) {
+        oscErrorMessage.setVisible(visible);
+    }
+
+    private boolean isPermutInputCorrect() {
+        return Integer.parseInt(oscMaxWidth.getText()) < 8 && Integer.parseInt(oscMaxWidth.getText()) > 0 &&
+                Integer.parseInt(oscMaxHeight.getText()) < 8 && Integer.parseInt(oscMaxHeight.getText()) > 0 &&
+                new File(pathToPermut.getText()).isDirectory();
+    }
+
+    @FXML
+    public void openOscillatorFinderPane() {
+        oscillatorFinderPane.setVisible(true);
+    }
+
+    @FXML
+    public void closeOscillatorFinderPane() {
+        oscillatorFinderPane.setVisible(false);
+    }
+
+    @FXML
+    public void startFinder() {
+        
+    }
+
+    @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        oscillatorFinderPane.setVisible(false);
     }
 }
